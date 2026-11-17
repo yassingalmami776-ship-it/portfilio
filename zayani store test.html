@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zayani Store | متجر الزياني الإلكتروني</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Cairo (Arabic) & Plus Jakarta Sans (English) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        arabic: ['Cairo', 'sans-serif'],
+                        english: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#1e1b4b',
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar & Base Typography */
+        body[dir="rtl"] { font-family: 'Cairo', sans-serif; }
+        body[dir="ltr"] { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .dark .glass-nav {
+            background: rgba(15, 23, 42, 0.88);
+        }
+
+        /* 3D Credit Card Effect */
+        .credit-card-bg {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #4f46e5 100%);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.35s ease-out forwards;
+        }
+    </style>
+</head>
+<body dir="rtl" class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen flex flex-col">
+
+    <!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+    <!-- ==================== TOP ANNOUNCEMENT BAR ==================== -->
+    <div class="bg-brand-900 text-white text-xs sm:text-sm py-2 px-4 text-center font-medium">
+        <span data-i18n="promoBanner">✨ شحن مجاني للطلبات فوق 150$ | استخدم كود الخصم: <strong class="text-gold-400 mx-1">ZAYANI10</strong> لخصم 10%</span>
+    </div>
+
+    <!-- ==================== HEADER / NAVBAR ==================== -->
+    <header class="sticky top-0 z-40 glass-nav border-b border-slate-200/80 dark:border-slate-800 transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 sm:h-20 gap-4">
+                
+                <!-- Logo -->
+                <a href="#" onclick="switchView('store'); return false;" class="flex items-center gap-2.5 group shrink-0">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-brand-600/30 group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-crown text-lg text-gold-400"></i>
+                    <p id="stat-revenue" class="text-2xl sm:text-3xl font-extrabold mt-3">0.000 د.ت</p>
+                </div>
+                    <div>
+                        <span class="text-xl sm:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-brand-700 to-indigo-500 dark:from-white dark:to-indigo-300 bg-clip-text text-transparent">
+                            ZAYANI
+                        </span>
+                        <span class="block text-[10px] font-bold tracking-widest uppercase text-slate-400 -mt-1" data-i18n="storeTagline">STORE</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Search Bar -->
+                <div class="hidden md:flex flex-1 max-w-md mx-4">
+                    <div class="relative w-full">
+                        <input type="text" id="desktop-search" oninput="handleSearch(this.value)" 
+                            class="w-full bg-slate-100 dark:bg-slate-800/90 border border-transparent focus:border-brand-500 focus:bg-white dark:focus:bg-slate-900 rounded-full py-2.5 px-5 ltr:pr-11 rtl:pl-11 text-sm outline-none transition-all"
+                            data-i18n-placeholder="searchPlaceholder" placeholder="ابحث عن المنتجات، الماركات...">
+                        <i class="fa-solid fa-magnifying-glass absolute top-1/2 -translate-y-1/2 ltr:right-4 rtl:left-4 text-slate-400 text-sm"></i>
+                    </div>
+                </div>
+
+                <!-- Navigation Actions -->
+                <div class="flex items-center gap-1.5 sm:gap-3">
+                    <!-- Store View Button -->
+                    <button onclick="switchView('store')" id="nav-store-btn" class="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold text-brand-600 bg-brand-50 dark:bg-brand-900/40 dark:text-brand-300 transition">
+                        <i class="fa-solid fa-store"></i>
+                        <span data-i18n="navStore">المتجر</span>
+                    </button>
+
+                    <!-- Admin Dashboard Button (Visible when logged in as Admin) -->
+                    <button onclick="switchView('admin')" id="nav-admin-btn" class="hidden items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold bg-amber-500/15 text-amber-600 dark:text-amber-400 hover:bg-amber-500/25 border border-amber-500/30 transition">
+                        <i class="fa-solid fa-gauge-high"></i>
+                        <span data-i18n="navAdmin">لوحة التحكم</span>
+                    </button>
+
+                    <!-- Language Switcher -->
+                    <button onclick="toggleLanguage()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs sm:text-sm font-bold border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="Switch Language">
+                        <i class="fa-solid fa-globe text-brand-600 dark:text-brand-400"></i>
+                        <span id="lang-label">English</span>
+                    </button>
+
+                    <!-- Dark Mode Toggle -->
+                    <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="Toggle Theme">
+                        <i id="theme-icon" class="fa-solid fa-moon text-slate-600 dark:text-amber-400"></i>
+                    </button>
+
+                    <!-- User Account Button -->
+                    <button onclick="openAuthModal()" id="user-menu-btn" class="flex items-center gap-2 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                        <div class="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900 text-brand-600 dark:text-brand-300 flex items-center justify-center text-xs font-bold">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <span id="header-username" class="hidden lg:inline text-sm font-semibold max-w-[100px] truncate" data-i18n="loginBtn">دخول</span>
+                    </button>
+
+                    <!-- Shopping Cart Button -->
+                    <button onclick="toggleCartDrawer(true)" class="relative w-10 h-10 sm:w-auto sm:px-4 sm:py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white flex items-center justify-center gap-2 shadow-md shadow-brand-600/20 transition">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        <span class="hidden sm:inline text-sm font-semibold" data-i18n="cartBtn">السلة</span>
+                        <span id="cart-badge" class="absolute -top-1.5 -right-1.5 sm:static sm:bg-white sm:text-brand-600 bg-rose-500 text-white text-[11px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search Bar -->
+            <div class="pb-3 md:hidden">
+                <div class="relative w-full">
+                    <input type="text" id="mobile-search" oninput="handleSearch(this.value)" 
+                        class="w-full bg-slate-100 dark:bg-slate-800 border border-transparent focus:border-brand-500 rounded-xl py-2 px-4 ltr:pr-10 rtl:pl-10 text-sm outline-none"
+                        data-i18n-placeholder="searchPlaceholder" placeholder="ابحث عن المنتجات...">
+                    <i class="fa-solid fa-magnifying-glass absolute top-1/2 -translate-y-1/2 ltr:right-3.5 rtl:left-3.5 text-slate-400 text-xs"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== MAIN CONTENT AREA ==================== -->
+    <main class="flex-1">
+
+        <!-- ==================== VIEW 1: STOREFRONT ==================== -->
+        <section id="view-store" class="animate-fade-in">
+            
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden bg-gradient-to-br from-slate-900 via-brand-900 to-indigo-950 text-white">
+                <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 relative z-10">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-7 space-y-5 text-center lg:text-start">
+                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-gold-400 text-xs sm:text-sm font-semibold">
+                                <i class="fa-solid fa-sparkles"></i>
+                                <span data-i18n="heroBadge">تشكيلة 2026 الحصرية</span>
+                            </span>
+                            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-tight" data-i18n="heroTitle">
+                                الفخامة والتقنية في مكان واحد مع متجر الزياني
+                            </h1>
+                            <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0" data-i18n="heroSubtitle">
+                                تسوق أحدث الإلكترونيات، الساعات الذكية، والأزياء العصرية بأفضل الأسعار مع ضمان الجودة وشحن سريع لجميع المناطق.
+                            </p>
+                            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2">
+                                <a href="#products-section" class="px-6 py-3.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold shadow-lg shadow-brand-600/30 transition flex items-center gap-2">
+                                    <span data-i18n="shopNow">تسوق الآن</span>
+                                    <i class="fa-solid fa-arrow-left rtl:rotate-0 ltr:rotate-180"></i>
+                                </a>
+                                <button onclick="openAuthModal(true)" class="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold transition flex items-center gap-2">
+                                    <i class="fa-solid fa-user-shield text-gold-400"></i>
+                                    <span data-i18n="tryAdminBtn">تجربة لوحة التحكم</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-5 hidden sm:block">
+                            <div class="relative mx-auto max-w-md">
+                                <div class="absolute -inset-2 bg-gradient-to-r from-brand-500 to-gold-500 rounded-3xl blur-xl opacity-40"></div>
+                                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80" 
+                                     onerror="this.src='https://placehold.co/600x450/1e1b4b/ffffff?text=Zayani+Store'"
+                                     alt="Featured Product" class="relative rounded-3xl shadow-2xl border border-white/15 object-cover w-full h-80">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Strip -->
+            <div class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50">
+                            <div class="w-11 h-11 rounded-xl bg-brand-100 dark:bg-brand-900/50 text-brand-600 dark:text-brand-400 flex items-center justify-center text-lg shrink-0">
+                                <i class="fa-solid fa-truck-fast"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm" data-i18n="feat1Title">شحن سريع وآمن</h4>
+                                <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="feat1Desc">توصيل خلال 24-48 ساعة</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50">
+                            <div class="w-11 h-11 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-lg shrink-0">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm" data-i18n="feat2Title">دفع إلكتروني محمي</h4>
+                                <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="feat2Desc">تشفير كامل SSL 256-bit</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50">
+                            <div class="w-11 h-11 rounded-xl bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg shrink-0">
+                                <i class="fa-solid fa-rotate-left"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm" data-i18n="feat3Title">استرجاع مجاني</h4>
+                                <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="feat3Desc">خلال 14 يوماً من الشراء</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50">
+                            <div class="w-11 h-11 rounded-xl bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center text-lg shrink-0">
+                                <i class="fa-solid fa-headset"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm" data-i18n="feat4Title">دعم فني 24/7</h4>
+                                <p class="text-xs text-slate-500 dark:text-slate-400" data-i18n="feat4Desc">خدمة عملاء على مدار الساعة</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Catalog Section -->
+            <div id="products-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                
+                <!-- Section Header & Category Filters -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold" data-i18n="featuredProducts">منتجاتنا المختارة</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1" data-i18n="browseCatalog">تصفح أحدث المنتجات المضافة إلى قاعدة بيانات المتجر</p>
+                    </div>
+
+                    <!-- Category Filter Pills -->
+                    <div id="category-filters" class="flex flex-wrap items-center gap-2">
+                        <!-- Rendered dynamically via JS -->
+                    </div>
+                </div>
+
+                <!-- Products Grid -->
+                <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Rendered dynamically via JS -->
+                </div>
+
+                <!-- Empty Search State -->
+                <div id="empty-products-state" class="hidden text-center py-16 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800">
+                    <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto mb-4 text-2xl">
+                        <i class="fa-solid fa-box-open"></i>
+                    </div>
+                    <h3 class="text-lg font-bold" data-i18n="noProductsFound">لا توجد منتجات مطابقة لبحثك</h3>
+                    <p class="text-sm text-slate-500 mt-1" data-i18n="tryDifferentFilter">جرب البحث بكلمات أخرى أو اختر تصنيفاً مختلفاً</p>
+                    <button onclick="resetFilters()" class="mt-4 px-5 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition" data-i18n="showAllBtn">عرض جميع المنتجات</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== VIEW 2: ADMIN DASHBOARD ==================== -->
+        <section id="view-admin" class="hidden animate-fade-in max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            
+            <!-- Admin Top Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm mb-8">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 text-xs font-bold uppercase">Admin Panel</span>
+                        <span class="text-xs text-slate-400">LocalDB Connected</span>
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold mt-1" data-i18n="adminTitle">لوحة تحكم متجر الزياني</h1>
+                    <p class="text-sm text-slate-500 dark:text-slate-400" data-i18n="adminSubtitle">إدارة المنتجات، المخزون، الطلبات، وقاعدة البيانات</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <button onclick="openProductFormModal()" class="px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold flex items-center gap-2 shadow-md transition">
+                        <i class="fa-solid fa-plus"></i>
+                        <span data-i18n="addNewProduct">إضافة منتج جديد</span>
+                    </button>
+                    <button onclick="resetDatabase()" class="px-4 py-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800/60 hover:bg-rose-100 text-sm font-semibold flex items-center gap-2 transition">
+                        <i class="fa-solid fa-database"></i>
+                        <span data-i18n="resetDbBtn">إعادة ضبط البيانات</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- KPI Stats Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-slate-500" data-i18n="statRevenue">إجمالي الإيرادات</span>
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 flex items-center justify-center">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <p id="stat-revenue" class="text-2xl sm:text-3xl font-extrabold mt-3">$0.00</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-slate-500" data-i18n="statOrders">إجمالي الطلبات</span>
+                        <div class="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-900/40 text-brand-600 flex items-center justify-center">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                        </div>
+                    </div>
+                    <p id="stat-orders" class="text-2xl sm:text-3xl font-extrabold mt-3">0</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-slate-500" data-i18n="statProducts">المنتجات المسجلة</span>
+                        <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 flex items-center justify-center">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                        </div>
+                    </div>
+                    <p id="stat-products" class="text-2xl sm:text-3xl font-extrabold mt-3">0</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-slate-500" data-i18n="statCustomers">العملاء المسجلون</span>
+                        <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/40 text-purple-600 flex items-center justify-center">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+                    <p id="stat-customers" class="text-2xl sm:text-3xl font-extrabold mt-3">0</p>
+                </div>
+            </div>
+
+            <!-- Admin Tabs -->
+            <div class="flex gap-2 border-b border-slate-200 dark:border-slate-800 mb-6">
+                <button onclick="switchAdminTab('products')" id="tab-admin-products" class="px-5 py-3 text-sm font-bold border-b-2 border-brand-600 text-brand-600 transition" data-i18n="tabProducts">
+                    إدارة المنتجات (قاعدة البيانات)
+                </button>
+                <button onclick="switchAdminTab('orders')" id="tab-admin-orders" class="px-5 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition" data-i18n="tabOrders">
+                    إدارة الطلبات والمدفوعات
+                </button>
+            </div>
+
+            <!-- Admin Products Table -->
+            <div id="admin-products-panel" class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-start">
+                        <thead class="bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-800">
+                            <tr>
+                                <th class="py-4 px-5 text-start" data-i18n="thProduct">المنتج</th>
+                                <th class="py-4 px-5 text-start" data-i18n="thCategory">التصنيف</th>
+                                <th class="py-4 px-5 text-start" data-i18n="thPrice">السعر</th>
+                                <th class="py-4 px-5 text-start" data-i18n="thStock">المخزون</th>
+                                <th class="py-4 px-5 text-end" data-i18n="thActions">إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-products-tbody" class="divide-y divide-slate-200 dark:divide-slate-800">
+                            <!-- Rendered via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Admin Orders Table -->
+            <div id="admin-orders-panel" class="hidden bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-start">
+                        <thead class="bg-slate-50 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 font-bold border-b border-slate-200 dark:border-slate-800">
+                            <tr>
+                                <th class="py-4 px-5 text-start" data-i18n="thOrderId">رقم الطلب</th>
+                                <th class="py-4 px-5 text-start" data-i18n="thCustomer">العميل</th>
+                                <th class="py-4 px-5 text-start" data-i18n="thPayment">طريقة الدفع</th>
+                                <th class="py-4 px-5 text-start" data-i18n="thTotal">المبلغ الإجمالي</th>
+                                <th class="py-4 px-5 text-start" data-i18n="thStatus">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-orders-tbody" class="divide-y divide-slate-200 dark:divide-slate-800">
+                            <!-- Rendered via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-slate-900 text-slate-300 border-t border-slate-800 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <div class="flex items-center gap-2.5 mb-4">
+                        <div class="w-9 h-9 rounded-xl bg-brand-600 flex items-center justify-center text-white">
+                            <i class="fa-solid fa-crown text-gold-400"></i>
+                        </div>
+                        <span class="text-xl font-extrabold text-white">ZAYANI STORE</span>
+                    </div>
+                    <p class="text-sm text-slate-400 leading-relaxed" data-i18n="footerAbout">
+                        متجر الزياني الإلكتروني وجهتك الأولى للتسوق العصري والآمن. نوفر تجربة تسوق متكاملة باللغتين العربية والإنجليزية.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4" data-i18n="quickLinks">روابط سريعة</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" onclick="switchView('store'); return false;" class="hover:text-white transition" data-i18n="navStore">المتجر الرئيسي</a></li>
+                        <li><a href="#" onclick="openAuthModal(); return false;" class="hover:text-white transition" data-i18n="loginRegisterLink">تسجيل الدخول / إنشاء حساب</a></li>
+                        <li><a href="#" onclick="openAuthModal(true); return false;" class="hover:text-white transition" data-i18n="adminAccessLink">دخول الإدارة (Dashboard)</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4" data-i18n="paymentMethods">وسائل الدفع المدعومة</h4>
+                    <div class="flex items-center gap-3 text-2xl text-slate-400">
+                        <i class="fa-brands fa-cc-visa hover:text-white transition"></i>
+                        <i class="fa-brands fa-cc-mastercard hover:text-white transition"></i>
+                        <i class="fa-brands fa-cc-apple-pay hover:text-white transition"></i>
+                        <i class="fa-brands fa-cc-paypal hover:text-white transition"></i>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-4">© 2026 Zayani Store. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== SLIDE-OVER SHOPPING CART DRAWER ==================== -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 hidden">
+        <div onclick="toggleCartDrawer(false)" class="absolute inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity"></div>
+        <div class="absolute top-0 bottom-0 ltr:right-0 rtl:left-0 w-full max-w-md bg-white dark:bg-slate-900 shadow-2xl flex flex-col justify-between z-10 animate-fade-in">
+            
+            <!-- Drawer Header -->
+            <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-bag-shopping text-brand-600 text-xl"></i>
+                    <h3 class="text-lg font-extrabold" data-i18n="yourCart">سلة التسوق</h3>
+                </div>
+                <button onclick="toggleCartDrawer(false)" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Cart Items Container -->
+            <div id="cart-items-container" class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- Rendered via JS -->
+            </div>
+
+            <!-- Drawer Footer & Checkout Trigger -->
+            <div id="cart-footer" class="p-5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 space-y-4">
+                <!-- Promo Code Input -->
+                <div class="flex gap-2">
+                    <input type="text" id="promo-input" class="flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm uppercase outline-none focus:border-brand-500" placeholder="ZAYANI10">
+                    <button onclick="applyPromoCode()" class="px-4 py-2 rounded-xl bg-slate-800 dark:bg-slate-700 text-white text-xs font-bold hover:bg-slate-700 transition" data-i18n="applyPromo">تطبيق</button>
+                </div>
+
+                <div class="space-y-1.5 text-sm">
+                    <div class="flex justify-between text-slate-500">
+                        <span data-i18n="subtotal">المجموع الفرعي</span>
+                        <span id="cart-subtotal">0.000 د.ت</span>
+                    </div>
+                    <div id="discount-row" class="hidden flex justify-between text-emerald-600 font-semibold">
+                        <span data-i18n="discount">الخصم (10%)</span>
+                        <span id="cart-discount">-0.000 د.ت</span>
+                    </div>
+                    <div class="flex justify-between text-slate-500">
+                        <span data-i18n="shippingCost">مصاريف التوصيل</span>
+                        <span id="cart-shipping">8.000 د.ت</span>
+                    </div>
+                    <div class="flex justify-between text-base font-extrabold pt-2 border-t border-slate-200 dark:border-slate-800">
+                        <span data-i18n="total">الإجمالي</span>
+                        <span id="cart-total" class="text-brand-600 dark:text-brand-400">0.000 د.ت</span>
+                    </div>
+                </div>
+
+                <button onclick="openCheckoutModal()" class="w-full py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold shadow-lg shadow-brand-600/25 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-lock"></i>
+                    <span data-i18n="proceedCheckout">إتمام الشراء والدفع الإلكتروني</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ELECTRONIC PAYMENT / CHECKOUT MODAL ==================== -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div onclick="closeCheckoutModal()" class="absolute inset-0 bg-slate-950/70 backdrop-blur-sm"></div>
+        <div class="relative bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 z-10 animate-fade-in">
+            
+            <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800 mb-6">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 flex items-center justify-center">
+                        <i class="fa-solid fa-credit-card"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-extrabold" data-i18n="checkoutTitle">بوابة الدفع الإلكتروني الآمنة</h3>
+                        <p class="text-xs text-slate-500">Zayani Pay Gateway • Encrypted</p>
+                    </div>
+                </div>
+                <button onclick="closeCheckoutModal()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Checkout Form View -->
+            <form id="checkout-form" onsubmit="processPayment(event)" class="space-y-5">
+                
+                <!-- Customer Shipping Info -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold mb-1.5" data-i18n="fullNameLabel">الاسم الكامل</label>
+                        <input type="text" id="chk-name" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500" placeholder="أحمد الزياني">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-1.5" data-i18n="phoneLabel">رقم الهاتف</label>
+                        <input type="tel" id="chk-phone" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500" placeholder="+216 00 000 000">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold mb-1.5" data-i18n="addressLabel">عنوان التوصيل</label>
+                        <input type="text" id="chk-address" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500" placeholder="المدينة، الشارع، رقم المنزل">
+                    </div>
+                </div>
+
+                <!-- Payment Method Selector -->
+                <div>
+                    <label class="block text-xs font-bold mb-2" data-i18n="selectPaymentMethod">اختر وسيلة الدفع</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="paymentMethod" value="Carte Bancaire / e-Dinar" checked onchange="toggleCardFields(true)" class="peer sr-only">
+                            <div class="p-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 peer-checked:border-brand-600 peer-checked:bg-brand-50/50 dark:peer-checked:bg-brand-900/20 text-center transition">
+                                <i class="fa-regular fa-credit-card text-lg text-brand-600 mb-1"></i>
+                                <span class="block text-xs font-bold" data-i18n="payCard">بطاقة بنكية / e-Dinar</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="paymentMethod" value="D17 / Mobile Wallet" onchange="toggleCardFields(false)" class="peer sr-only">
+                            <div class="p-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 peer-checked:border-brand-600 peer-checked:bg-brand-50/50 dark:peer-checked:bg-brand-900/20 text-center transition">
+                                <i class="fa-solid fa-mobile-screen-button text-xl text-indigo-600 mb-1"></i>
+                                <span class="block text-xs font-bold" data-i18n="payWallet">تطبيق D17 / محفظة</span>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="paymentMethod" value="Cash on Delivery" onchange="toggleCardFields(false)" class="peer sr-only">
+                            <div class="p-3 rounded-xl border-2 border-slate-200 dark:border-slate-700 peer-checked:border-brand-600 peer-checked:bg-brand-50/50 dark:peer-checked:bg-brand-900/20 text-center transition">
+                                <i class="fa-solid fa-money-bill-wave text-lg text-emerald-600 mb-1"></i>
+                                <span class="block text-xs font-bold" data-i18n="payCod">الدفع عند الاستلام</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Interactive Virtual Credit Card & Inputs -->
+                <div id="credit-card-section" class="space-y-4 pt-2">
+                    <!-- Live Card Preview -->
+                    <div class="credit-card-bg rounded-2xl p-5 text-white shadow-xl relative overflow-hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-microchip text-2xl text-gold-400"></i>
+                                <span class="text-xs font-bold tracking-wider bg-white/15 px-2 py-0.5 rounded">CIB / e-DINAR</span>
+                            </div>
+                            <div class="flex gap-2 text-2xl">
+                                <i class="fa-brands fa-cc-visa"></i>
+                                <i class="fa-brands fa-cc-mastercard"></i>
+                            </div>
+                        </div>
+                        <p id="preview-card-num" class="text-lg sm:text-xl font-mono tracking-widest mb-4" dir="ltr">•••• •••• •••• 4242</p>
+                        <div class="flex justify-between items-end text-xs">
+                            <div>
+                                <span class="text-indigo-200 block text-[10px] uppercase">Card Holder</span>
+                                <span id="preview-card-name" class="font-bold uppercase tracking-wider">ZAYANI CUSTOMER</span>
+                            </div>
+                            <div>
+                                <span class="text-indigo-200 block text-[10px] uppercase">Expires</span>
+                                <span id="preview-card-exp" class="font-mono font-bold">12/28</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Inputs -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="sm:col-span-3">
+                            <input type="text" id="card-number" maxlength="19" oninput="formatCardInput(this)" placeholder="4532 0151 1283 4242" dir="ltr"
+                                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm font-mono outline-none focus:border-brand-500">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <input type="text" id="card-holder" oninput="document.getElementById('preview-card-name').textContent = this.value || 'ZAYANI CUSTOMER'" placeholder="Cardholder Name"
+                                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="card-expiry" maxlength="5" oninput="document.getElementById('preview-card-exp').textContent = this.value || '12/28'" placeholder="MM/YY" dir="ltr"
+                                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm font-mono text-center outline-none focus:border-brand-500">
+                            <input type="password" id="card-cvv" maxlength="3" placeholder="CVV" dir="ltr"
+                                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5 text-sm font-mono text-center outline-none focus:border-brand-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary & Submit -->
+                <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-slate-500 block" data-i18n="amountToPay">المبلغ المستحق للدفع</span>
+                        <span id="checkout-final-amount" class="text-2xl font-extrabold text-brand-600">0.000 د.ت</span>
+                    </div>
+                    <button type="submit" id="pay-submit-btn" class="px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-lg shadow-emerald-600/25 transition flex items-center gap-2">
+                        <i class="fa-solid fa-shield-check"></i>
+                        <span data-i18n="confirmPaymentBtn">تأكيد الدفع الآن</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Payment Success Receipt View -->
+            <div id="payment-receipt" class="hidden text-center py-6 space-y-4">
+                <div class="w-20 h-20 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 flex items-center justify-center mx-auto text-4xl animate-bounce">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h3 class="text-2xl font-extrabold" data-i18n="paymentSuccessTitle">تمت عملية الدفع بنجاح!</h3>
+                <p class="text-sm text-slate-500" data-i18n="paymentSuccessDesc">شكراً لتسوقك من متجر الزياني. تم حفظ طلبك في قاعدة البيانات.</p>
+                <div class="bg-slate-50 dark:bg-slate-800 rounded-2xl p-4 max-w-sm mx-auto text-sm space-y-2 border border-slate-200 dark:border-slate-700">
+                    <div class="flex justify-between">
+                        <span class="text-slate-500" data-i18n="receiptOrderNo">رقم الفاتورة:</span>
+                        <span id="receipt-id" class="font-mono font-bold text-brand-600">#ZYN-0000</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-500" data-i18n="receiptPaid">المبلغ المدفوع:</span>
+                        <span id="receipt-amount" class="font-bold">0.000 د.ت</span>
+                    </div>
+                </div>
+                <button onclick="closeCheckoutModal()" class="px-6 py-3 rounded-xl bg-brand-600 text-white font-bold hover:bg-brand-700 transition" data-i18n="continueShoppingBtn">متابعة التسوق</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ==================== AUTHENTICATION MODAL (LOGIN / REGISTER / PROFILE) ==================== -->
+    <div id="auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div onclick="closeAuthModal()" class="absolute inset-0 bg-slate-950/70 backdrop-blur-sm"></div>
+        <div class="relative bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 z-10 animate-fade-in">
+            
+            <button onclick="closeAuthModal()" class="absolute top-5 ltr:right-5 rtl:left-5 w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Logged Out View (Login & Register Tabs) -->
+            <div id="auth-forms-container">
+                <div class="text-center mb-6">
+                    <div class="w-12 h-12 rounded-2xl bg-brand-600 text-white flex items-center justify-center mx-auto mb-3 shadow-lg">
+                        <i class="fa-solid fa-crown text-gold-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold" data-i18n="welcomeAuth">مرحباً بك في متجر الزياني</h3>
+                    <p class="text-xs text-slate-500 mt-1" data-i18n="authSub">سجل الدخول لإدارة حسابك أو الوصول للوحة التحكم</p>
+                </div>
+
+                <!-- Switch Tabs -->
+                <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl mb-5">
+                    <button type="button" onclick="toggleAuthMode('login')" id="btn-mode-login" class="py-2 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 shadow-sm transition" data-i18n="loginTab">تسجيل الدخول</button>
+                    <button type="button" onclick="toggleAuthMode('register')" id="btn-mode-register" class="py-2 rounded-lg text-xs font-bold text-slate-500 transition" data-i18n="registerTab">حساب جديد</button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold mb-1" data-i18n="emailLabel">البريد الإلكتروني</label>
+                        <input type="email" id="login-email" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500" placeholder="admin@zayanistore.com">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-1" data-i18n="passwordLabel">كلمة المرور</label>
+                        <input type="password" id="login-password" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500" placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition" data-i18n="loginSubmit">دخول</button>
+                    
+                    <!-- Quick Demo Admin Fill -->
+                    <div class="pt-3 border-t border-slate-200 dark:border-slate-800 text-center">
+                        <button type="button" onclick="fillAdminDemo()" class="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline flex items-center justify-center gap-1.5 mx-auto">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span data-i18n="fillAdminDemo">تعبئة بيانات المدير التجريبية (Admin)</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Register Form -->
+                <form id="register-form" onsubmit="handleRegister(event)" class="hidden space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold mb-1" data-i18n="fullNameLabel">الاسم الكامل</label>
+                        <input type="text" id="reg-name" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-1" data-i18n="emailLabel">البريد الإلكتروني</label>
+                        <input type="email" id="reg-email" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-1" data-i18n="passwordLabel">كلمة المرور</label>
+                        <input type="password" id="reg-password" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm outline-none focus:border-brand-500">
+                    </div>
+                    <button type="submit" class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition" data-i18n="registerSubmit">إنشاء الحساب</button>
+                </form>
+            </div>
+
+            <!-- Logged In Profile View -->
+            <div id="auth-profile-container" class="hidden text-center space-y-4">
+                <div class="w-16 h-16 rounded-full bg-brand-100 dark:bg-brand-900 text-brand-600 dark:text-brand-300 flex items-center justify-center mx-auto text-2xl font-bold">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+                <div>
+                    <h4 id="profile-name" class="text-lg font-extrabold">User Name</h4>
+                    <p id="profile-email" class="text-xs text-slate-500">user@example.com</p>
+                    <span id="profile-role-badge" class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold bg-brand-100 text-brand-700">Customer</span>
+                </div>
+                <div class="pt-4 flex flex-col gap-2">
+                    <button id="profile-admin-shortcut" onclick="closeAuthModal(); switchView('admin');" class="hidden w-full py-2.5 rounded-xl bg-amber-500 text-white font-bold text-sm hover:bg-amber-600 transition" data-i18n="goToDashboard">
+                        الانتقال إلى لوحة التحكم
+                    </button>
+                    <button onclick="handleLogout()" class="w-full py-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 font-bold text-sm hover:bg-rose-100 transition" data-i18n="logoutBtn">
+                        تسجيل الخروج
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ==================== ADMIN ADD/EDIT PRODUCT MODAL ==================== -->
+    <div id="product-form-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div onclick="closeProductFormModal()" class="absolute inset-0 bg-slate-950/70 backdrop-blur-sm"></div>
+        <div class="relative bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full shadow-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 z-10 animate-fade-in">
+            <div class="flex items-center justify-between mb-5">
+                <h3 id="product-modal-title" class="text-xl font-extrabold" data-i18n="addNewProduct">إضافة منتج جديد</h3>
+                <button onclick="closeProductFormModal()" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="product-crud-form" onsubmit="saveProductFromAdmin(event)" class="space-y-4">
+                <input type="hidden" id="prod-id">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold mb-1">اسم المنتج (عربي)</label>
+                        <input type="text" id="prod-name-ar" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-1">Product Name (English)</label>
+                        <input type="text" id="prod-name-en" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm outline-none focus:border-brand-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold mb-1" data-i18n="thPriceTnd">السعر (د.ت)</label>
+                        <input type="number" step="0.001" id="prod-price" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-1" data-i18n="thStock">المخزون</label>
+                        <input type="number" id="prod-stock" required value="20" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm outline-none focus:border-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold mb-1" data-i18n="thCategory">التصنيف</label>
+                        <select id="prod-category" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm outline-none focus:border-brand-500">
+                            <option value="electronics">Electronics / إلكترونيات</option>
+                            <option value="watches">Watches / ساعات</option>
+                            <option value="fashion">Fashion / أزياء</option>
+                            <option value="accessories">Accessories / إكسسوارات</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold mb-1">رابط الصورة (Image URL)</label>
+                    <input type="url" id="prod-image" required placeholder="https://images.unsplash.com/..." class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-sm outline-none focus:border-brand-500">
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition" data-i18n="saveProductBtn">
+                    حفظ المنتج في قاعدة البيانات
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT APPLICATION LOGIC & LOCAL DATABASE ==================== -->
+    <script>
+        /**
+         * 1. BILINGUAL DICTIONARY (ARABIC & ENGLISH) - TUNISIAN DINAR (TND)
+         */
+        const i18n = {
+            ar: {
+                promoBanner: '✨ توصيل مجاني للطلبات فوق 300.000 د.ت | استخدم كود الخصم: <strong class="text-gold-400 mx-1">ZAYANI10</strong> لخصم 10%',
+                storeTagline: 'متجر الزياني',
+                searchPlaceholder: 'ابحث عن المنتجات، الماركات...',
+                navStore: 'المتجر',
+                navAdmin: 'لوحة التحكم',
+                loginBtn: 'دخول',
+                cartBtn: 'السلة',
+                heroBadge: 'تشكيلة 2026 الحصرية في تونس',
+                heroTitle: 'الفخامة والتقنية في مكان واحد مع متجر الزياني',
+                heroSubtitle: 'تسوق أحدث الإلكترونيات، الساعات الذكية، والأزياء العصرية بأفضل الأسعار بالدينار التونسي مع توصيل سريع لكل الولايات.',
+                shopNow: 'تسوق الآن',
+                tryAdminBtn: 'تجربة لوحة التحكم',
+                feat1Title: 'توصيل لكل الولايات',
+                feat1Desc: 'توصيل سريع خلال 24-48 ساعة',
+                feat2Title: 'دفع إلكتروني تونسي ودولي',
+                feat2Desc: 'CIB / e-Dinar / D17 / عند الاستلام',
+                feat3Title: 'استرجاع مجاني',
+                feat3Desc: 'خلال 14 يوماً من الشراء',
+                feat4Title: 'دعم فني 24/7',
+                feat4Desc: 'خدمة عملاء على مدار الساعة',
+                featuredProducts: 'منتجاتنا المختارة',
+                browseCatalog: 'تصفح أحدث المنتجات المضافة إلى قاعدة بيانات المتجر',
+                noProductsFound: 'لا توجد منتجات مطابقة لبحثك',
+                tryDifferentFilter: 'جرب البحث بكلمات أخرى أو اختر تصنيفاً مختلفاً',
+                showAllBtn: 'عرض جميع المنتجات',
+                addToCart: 'أضف للسلة',
+                outOfStock: 'نفذت الكمية',
+                adminTitle: 'لوحة تحكم متجر الزياني',
+                adminSubtitle: 'إدارة المنتجات، المخزون، الطلبات، وقاعدة البيانات بالدينار التونسي',
+                addNewProduct: 'إضافة منتج جديد',
+                resetDbBtn: 'إعادة ضبط البيانات',
+                statRevenue: 'إجمالي الإيرادات (د.ت)',
+                statOrders: 'إجمالي الطلبات',
+                statProducts: 'المنتجات المسجلة',
+                statCustomers: 'العملاء المسجلون',
+                tabProducts: 'إدارة المنتجات (قاعدة البيانات)',
+                tabOrders: 'إدارة الطلبات والمدفوعات',
+                thProduct: 'المنتج',
+                thCategory: 'التصنيف',
+                thPrice: 'السعر',
+                thPriceTnd: 'السعر (د.ت)',
+                thStock: 'المخزون',
+                thActions: 'إجراءات',
+                thOrderId: 'رقم الطلب',
+                thCustomer: 'العميل',
+                thPayment: 'طريقة الدفع',
+                thTotal: 'المبلغ الإجمالي',
+                thStatus: 'الحالة',
+                footerAbout: 'متجر الزياني الإلكتروني وجهتك الأولى للتسوق العصري والآمن في تونس. نوفر تجربة تسوق متكاملة باللغتين العربية والإنجليزية.',
+                quickLinks: 'روابط سريعة',
+                loginRegisterLink: 'تسجيل الدخول / إنشاء حساب',
+                adminAccessLink: 'دخول الإدارة (Dashboard)',
+                paymentMethods: 'وسائل الدفع المدعومة في تونس',
+                yourCart: 'سلة التسوق',
+                emptyCartMsg: 'سلة التسوق فارغة حالياً',
+                applyPromo: 'تطبيق',
+                subtotal: 'المجموع الفرعي',
+                discount: 'الخصم (10%)',
+                shippingCost: 'مصاريف التوصيل',
+                freeShipping: 'مجاني',
+                total: 'الإجمالي',
+                proceedCheckout: 'إتمام الشراء والدفع الإلكتروني',
+                checkoutTitle: 'بوابة الدفع الإلكتروني الآمنة',
+                fullNameLabel: 'الاسم واللقب',
+                phoneLabel: 'رقم الهاتف التونسي',
+                addressLabel: 'العنوان الكامل والولاية',
+                selectPaymentMethod: 'اختر وسيلة الدفع',
+                payCard: 'بطاقة بنكية / e-Dinar',
+                payWallet: 'تطبيق D17 / محفظة',
+                payCod: 'الدفع عند الاستلام',
+                amountToPay: 'المبلغ المستحق للدفع',
+                confirmPaymentBtn: 'تأكيد الدفع الآن',
+                paymentSuccessTitle: 'تمت عملية الدفع بنجاح!',
+                paymentSuccessDesc: 'شكراً لتسوقك من متجر الزياني. تم حفظ طلبك في قاعدة البيانات.',
+                receiptOrderNo: 'رقم الفاتورة:',
+                receiptPaid: 'المبلغ المدفوع:',
+                continueShoppingBtn: 'متابعة التسوق',
+                welcomeAuth: 'مرحباً بك في متجر الزياني',
+                authSub: 'سجل الدخول لإدارة حسابك أو الوصول للوحة التحكم',
+                loginTab: 'تسجيل الدخول',
+                registerTab: 'حساب جديد',
+                emailLabel: 'البريد الإلكتروني',
+                passwordLabel: 'كلمة المرور',
+                loginSubmit: 'دخول',
+                fillAdminDemo: 'تعبئة بيانات المدير التجريبية (Admin)',
+                registerSubmit: 'إنشاء الحساب',
+                goToDashboard: 'الانتقال إلى لوحة التحكم',
+                logoutBtn: 'تسجيل الخروج',
+                saveProductBtn: 'حفظ المنتج في قاعدة البيانات',
+                cat_all: 'الكل',
+                cat_electronics: 'إلكترونيات',
+                cat_watches: 'ساعات ذكية',
+                cat_fashion: 'أزياء',
+                cat_accessories: 'إكسسوارات'
+            },
+            en: {
+                promoBanner: '✨ Free delivery across Tunisia on orders over 300.000 TND | Use code: <strong class="text-gold-400 mx-1">ZAYANI10</strong> for 10% OFF',
+                storeTagline: 'ZAYANI STORE',
+                searchPlaceholder: 'Search products, brands...',
+                navStore: 'Store',
+                navAdmin: 'Dashboard',
+                loginBtn: 'Sign In',
+                cartBtn: 'Cart',
+                heroBadge: 'Exclusive 2026 Tunisia Collection',
+                heroTitle: 'Luxury & Technology Combined at Zayani Store',
+                heroSubtitle: 'Shop the latest electronics, smartwatches, and modern fashion in Tunisian Dinars (TND) with fast nationwide delivery.',
+                shopNow: 'Shop Now',
+                tryAdminBtn: 'Try Admin Dashboard',
+                feat1Title: 'Nationwide Delivery',
+                feat1Desc: 'Fast shipping across all 24 governorates',
+                feat2Title: 'Tunisian & Global Pay',
+                feat2Desc: 'CIB / e-Dinar / D17 / Cash on Delivery',
+                feat3Title: 'Free Returns',
+                feat3Desc: 'Within 14 days of purchase',
+                feat4Title: '24/7 Support',
+                feat4Desc: 'Round-the-clock customer care',
+                featuredProducts: 'Featured Products',
+                browseCatalog: 'Browse the latest products stored in our store database',
+                noProductsFound: 'No matching products found',
+                tryDifferentFilter: 'Try another search term or select a different category',
+                showAllBtn: 'Show All Products',
+                addToCart: 'Add to Cart',
+                outOfStock: 'Out of Stock',
+                adminTitle: 'Zayani Store Admin Dashboard',
+                adminSubtitle: 'Manage products, inventory, customer orders, and revenue in TND',
+                addNewProduct: 'Add New Product',
+                resetDbBtn: 'Reset Demo Data',
+                statRevenue: 'Total Revenue (TND)',
+                statOrders: 'Total Orders',
+                statProducts: 'Registered Products',
+                statCustomers: 'Registered Users',
+                tabProducts: 'Products Management (DB)',
+                tabOrders: 'Orders & Payments',
+                thProduct: 'Product',
+                thCategory: 'Category',
+                thPrice: 'Price',
+                thPriceTnd: 'Price (TND)',
+                thStock: 'Stock',
+                thActions: 'Actions',
+                thOrderId: 'Order ID',
+                thCustomer: 'Customer',
+                thPayment: 'Payment Method',
+                thTotal: 'Total Amount',
+                thStatus: 'Status',
+                footerAbout: 'Zayani Store is your premier destination for modern, secure online shopping in Tunisia with full Arabic & English support.',
+                quickLinks: 'Quick Links',
+                loginRegisterLink: 'Sign In / Create Account',
+                adminAccessLink: 'Admin Dashboard Access',
+                paymentMethods: 'Supported Payment Methods in Tunisia',
+                yourCart: 'Shopping Cart',
+                emptyCartMsg: 'Your shopping cart is currently empty',
+                applyPromo: 'Apply',
+                subtotal: 'Subtotal',
+                discount: 'Discount (10%)',
+                shippingCost: 'Delivery Fee',
+                freeShipping: 'FREE',
+                total: 'Total',
+                proceedCheckout: 'Proceed to Electronic Checkout',
+                checkoutTitle: 'Secure Electronic Payment Gateway',
+                fullNameLabel: 'Full Name',
+                phoneLabel: 'Tunisian Phone Number',
+                addressLabel: 'Delivery Address & Governorate',
+                selectPaymentMethod: 'Select Payment Method',
+                payCard: 'Bank Card / e-Dinar',
+                payWallet: 'D17 App / Mobile Wallet',
+                payCod: 'Cash on Delivery',
+                amountToPay: 'Amount to Pay',
+                confirmPaymentBtn: 'Confirm Payment Now',
+                paymentSuccessTitle: 'Payment Successful!',
+                paymentSuccessDesc: 'Thank you for shopping at Zayani Store. Your order has been saved to the database.',
+                receiptOrderNo: 'Invoice ID:',
+                receiptPaid: 'Amount Paid:',
+                continueShoppingBtn: 'Continue Shopping',
+                welcomeAuth: 'Welcome to Zayani Store',
+                authSub: 'Sign in to manage your account or access the Admin Dashboard',
+                loginTab: 'Sign In',
+                registerTab: 'Register',
+                emailLabel: 'Email Address',
+                passwordLabel: 'Password',
+                loginSubmit: 'Sign In',
+                fillAdminDemo: 'Auto-fill Demo Admin Credentials',
+                registerSubmit: 'Create Account',
+                goToDashboard: 'Go to Admin Dashboard',
+                logoutBtn: 'Sign Out',
+                saveProductBtn: 'Save Product to Database',
+                cat_all: 'All',
+                cat_electronics: 'Electronics',
+                cat_watches: 'Smartwatches',
+                cat_fashion: 'Fashion',
+                cat_accessories: 'Accessories'
+            }
+        };
+
+        /**
+         * CURRENCY FORMATTER FOR TUNISIAN DINAR (TND / د.ت)
+         */
+        function formatTND(amount) {
+            const num = Number(amount || 0).toLocaleString('en-US', {
+                minimumFractionDigits: 3,
+                maximumFractionDigits: 3
+            });
+            return state.lang === 'ar' ? `${num} د.ت` : `${num} TND`;
+        }
+
+        /**
+         * 2. SEED DATA & LOCAL DATABASE ENGINE (PRICES IN TND)
+         */
+        const SEED_PRODUCTS = [
+            {
+                id: 'prod-1',
+                name_ar: 'ساعة الزياني الذكية برو الترا',
+                name_en: 'Zayani Smart Watch Pro Ultra',
+                price: 450.000,
+                category: 'watches',
+                stock: 18,
+                image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'prod-2',
+                name_ar: 'سماعات رأس لاسلكية عازلة للضوضاء',
+                name_en: 'Studio ANC Wireless Headphones',
+                price: 320.000,
+                category: 'electronics',
+                stock: 25,
+                image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'prod-3',
+                name_ar: 'حقيبة جلدية فاخرة لرجال الأعمال',
+                name_en: 'Executive Leather Briefcase',
+                price: 265.000,
+                category: 'fashion',
+                stock: 12,
+                image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'prod-4',
+                name_ar: 'نظارة شمسية كلاسيكية بإطار ذهبي',
+                name_en: 'Classic Gold-Frame Sunglasses',
+                price: 145.000,
+                category: 'accessories',
+                stock: 30,
+                image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'prod-5',
+                name_ar: 'كاميرا رقمية احترافية 4K',
+                name_en: 'Pro 4K Mirrorless Camera',
+                price: 1890.000,
+                category: 'electronics',
+                stock: 7,
+                image: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'prod-6',
+                name_ar: 'حذاء رياضي عصري مريح',
+                name_en: 'Urban Comfort Sneakers',
+                price: 210.000,
+                category: 'fashion',
+                stock: 22,
+                image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'prod-7',
+                name_ar: 'ساعة كرونوغراف كلاسيكية فاخرة',
+                name_en: 'Luxury Chronograph Wristwatch',
+                price: 590.000,
+                category: 'watches',
+                stock: 9,
+                image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'prod-8',
+                name_ar: 'مكبر صوت ذكي محيطي',
+                name_en: '360° Smart Home Speaker',
+                price: 185.000,
+                category: 'electronics',
+                stock: 15,
+                image: 'https://images.unsplash.com/photo-1589003077984-894e133dabab?auto=format&fit=crop&w=600&q=80'
+            }
+        ];
+
+        const SEED_USERS = [
+            { id: 'u-admin', name: 'مدير المتجر (Zayani Admin)', email: 'admin@zayanistore.com', password: 'admin123', role: 'admin' },
+            { id: 'u-demo', name: 'سارة المنصور', email: 'sara@example.com', password: '123456', role: 'customer' }
+        ];
+
+        const SEED_ORDERS = [
+            {
+                id: 'ZYN-8492',
+                customerName: 'كريم بن علي',
+                phone: '+216 55 123 456',
+                paymentMethod: 'Carte Bancaire / e-Dinar',
+                total: 450.000,
+                status: 'Delivered',
+                date: '2026-11-15'
+            },
+            {
+                id: 'ZYN-9104',
+                customerName: 'سارة المنصور',
+                phone: '+216 22 987 654',
+                paymentMethod: 'D17 / Mobile Wallet',
+                total: 530.000,
+                status: 'Shipped',
+                date: '2026-11-16'
+            }
+        ];
+
+        // Application State (v2_tnd keys ensure clean migration to TND prices)
+        let state = {
+            lang: localStorage.getItem('zayani_lang') || 'ar',
+            darkMode: localStorage.getItem('zayani_dark') === 'true',
+            products: JSON.parse(localStorage.getItem('zayani_products_tnd')) || SEED_PRODUCTS,
+            users: JSON.parse(localStorage.getItem('zayani_users_tnd')) || SEED_USERS,
+            orders: JSON.parse(localStorage.getItem('zayani_orders_tnd')) || SEED_ORDERS,
+            cart: JSON.parse(localStorage.getItem('zayani_cart_tnd')) || [],
+            currentUser: JSON.parse(localStorage.getItem('zayani_current_user')) || null,
+            selectedCategory: 'all',
+            searchQuery: '',
+            discountApplied: false
+        };
+
+        // Save State to Local Database
+        function syncDB() {
+            localStorage.setItem('zayani_products_tnd', JSON.stringify(state.products));
+            localStorage.setItem('zayani_users_tnd', JSON.stringify(state.users));
+            localStorage.setItem('zayani_orders_tnd', JSON.stringify(state.orders));
+            localStorage.setItem('zayani_cart_tnd', JSON.stringify(state.cart));
+            localStorage.setItem('zayani_current_user', JSON.stringify(state.currentUser));
+        }
+
+        /**
+         * 3. INITIALIZATION & UI TRANSLATION
+         */
+        window.addEventListener('DOMContentLoaded', () => {
+            if (state.darkMode) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('theme-icon').className = 'fa-solid fa-sun text-amber-400';
+            }
+            applyLanguage();
+            updateAuthUI();
+            renderCategoryFilters();
+            renderProducts();
+            updateCartUI();
+            renderAdminDashboard();
+        });
+
+        function toggleLanguage() {
+            state.lang = state.lang === 'ar' ? 'en' : 'ar';
+            localStorage.setItem('zayani_lang', state.lang);
+            applyLanguage();
+            renderCategoryFilters();
+            renderProducts();
+            updateCartUI();
+            renderAdminDashboard();
+        }
+
+        function applyLanguage() {
+            const isAr = state.lang === 'ar';
+            document.documentElement.lang = state.lang;
+            document.documentElement.dir = isAr ? 'rtl' : 'ltr';
+            document.body.dir = isAr ? 'rtl' : 'ltr';
+            document.getElementById('lang-label').textContent = isAr ? 'English' : 'العربية';
+
+            const dict = i18n[state.lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) el.innerHTML = dict[key];
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (dict[key]) el.placeholder = dict[key];
+            });
+        }
+
+        function toggleDarkMode() {
+            state.darkMode = !state.darkMode;
+            localStorage.setItem('zayani_dark', state.darkMode);
+            document.documentElement.classList.toggle('dark', state.darkMode);
+            document.getElementById('theme-icon').className = state.darkMode 
+                ? 'fa-solid fa-sun text-amber-400' 
+                : 'fa-solid fa-moon text-slate-600';
+        }
+
+        /**
+         * 4. STOREFRONT RENDERING & FILTERING
+         */
+        function renderCategoryFilters() {
+            const categories = ['all', 'electronics', 'watches', 'fashion', 'accessories'];
+            const container = document.getElementById('category-filters');
+            const dict = i18n[state.lang];
+
+            container.innerHTML = categories.map(cat => {
+                const active = state.selectedCategory === cat;
+                return `
+                    <button onclick="selectCategory('${cat}')" 
+                        class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition ${
+                            active 
+                            ? 'bg-brand-600 text-white shadow-md shadow-brand-600/20' 
+                            : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800'
+                        }">
+                        ${dict['cat_' + cat]}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectCategory(cat) {
+            state.selectedCategory = cat;
+            renderCategoryFilters();
+            renderProducts();
+        }
+
+        function handleSearch(val) {
+            state.searchQuery = val.trim().toLowerCase();
+            renderProducts();
+        }
+
+        function resetFilters() {
+            state.selectedCategory = 'all';
+            state.searchQuery = '';
+            document.getElementById('desktop-search').value = '';
+            document.getElementById('mobile-search').value = '';
+            renderCategoryFilters();
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            const emptyState = document.getElementById('empty-products-state');
+            const dict = i18n[state.lang];
+
+            const filtered = state.products.filter(p => {
+                const matchCat = state.selectedCategory === 'all' || p.category === state.selectedCategory;
+                const matchQuery = !state.searchQuery || 
+                    p.name_ar.toLowerCase().includes(state.searchQuery) || 
+                    p.name_en.toLowerCase().includes(state.searchQuery);
+                return matchCat && matchQuery;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = filtered.map(prod => {
+                const title = state.lang === 'ar' ? prod.name_ar : prod.name_en;
+                const catLabel = dict['cat_' + prod.category] || prod.category;
+                const inStock = prod.stock > 0;
+
+                return `
+                    <div class="group bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+                        <div>
+                            <div class="relative h-56 overflow-hidden bg-slate-100 dark:bg-slate-800">
+                                <img src="${prod.image}" 
+                                     onerror="this.src='https://placehold.co/400x300/e2e8f0/475569?text=Zayani+Product'"
+                                     alt="${title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-3 ltr:left-3 rtl:right-3 px-3 py-1 rounded-full text-[11px] font-bold bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-slate-700 dark:text-slate-200 shadow-sm">
+                                    ${catLabel}
+                                </span>
+                            </div>
+                            <div class="p-5">
+                                <h3 class="font-bold text-base sm:text-lg line-clamp-1 group-hover:text-brand-600 transition">${title}</h3>
+                                <div class="flex items-center justify-between mt-3">
+                                    <span class="text-lg sm:text-xl font-extrabold text-brand-600 dark:text-brand-400">${formatTND(prod.price)}</span>
+                                    <span class="text-xs font-medium ${inStock ? 'text-emerald-600' : 'text-rose-500'}">
+                                        ${inStock ? `(${prod.stock} متوفر)` : dict.outOfStock}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-5 pb-5">
+                            <button onclick="addToCart('${prod.id}')" ${!inStock ? 'disabled' : ''} 
+                                class="w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition ${
+                                    inStock 
+                                    ? 'bg-slate-900 dark:bg-brand-600 hover:bg-brand-600 dark:hover:bg-brand-500 text-white shadow-sm' 
+                                    : 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
+                                }">
+                                <i class="fa-solid fa-cart-plus"></i>
+                                <span>${inStock ? dict.addToCart : dict.outOfStock}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /**
+         * 5. SHOPPING CART & CHECKOUT / ELECTRONIC PAYMENT
+         */
+        function toggleCartDrawer(open) {
+            const drawer = document.getElementById('cart-drawer');
+            drawer.classList.toggle('hidden', !open);
+        }
+
+        function addToCart(productId) {
+            const product = state.products.find(p => p.id === productId);
+            if (!product || product.stock <= 0) return;
+
+            const existing = state.cart.find(item => item.id === productId);
+            if (existing) {
+                if (existing.qty < product.stock) {
+                    existing.qty += 1;
+                } else {
+                    showToast(state.lang === 'ar' ? 'وصلت للحد الأقصى المتاح في المخزون' : 'Max stock reached', 'warning');
+                    return;
+                }
+            } else {
+                state.cart.push({ id: productId, qty: 1 });
+            }
+
+            syncDB();
+            updateCartUI();
+            showToast(state.lang === 'ar' ? 'تمت إضافة المنتج إلى السلة' : 'Added to cart', 'success');
+        }
+
+        function updateCartQty(productId, delta) {
+            const index = state.cart.findIndex(item => item.id === productId);
+            if (index === -1) return;
+
+            const product = state.products.find(p => p.id === productId);
+            const newQty = state.cart[index].qty + delta;
+
+            if (newQty <= 0) {
+                state.cart.splice(index, 1);
+            } else if (product && newQty <= product.stock) {
+                state.cart[index].qty = newQty;
+            }
+
+            syncDB();
+            updateCartUI();
+        }
+
+        function applyPromoCode() {
+            const code = document.getElementById('promo-input').value.trim().toUpperCase();
+            if (code === 'ZAYANI10') {
+                state.discountApplied = true;
+                updateCartUI();
+                showToast(state.lang === 'ar' ? 'تم تطبيق خصم 10% بنجاح!' : '10% Discount Applied!', 'success');
+            } else {
+                showToast(state.lang === 'ar' ? 'كود الخصم غير صالح (جرب ZAYANI10)' : 'Invalid promo code (try ZAYANI10)', 'error');
+            }
+        }
+
+        function calculateCartTotals() {
+            let subtotal = 0;
+            state.cart.forEach(item => {
+                const prod = state.products.find(p => p.id === item.id);
+                if (prod) subtotal += prod.price * item.qty;
+            });
+            const discount = state.discountApplied ? subtotal * 0.10 : 0;
+            const afterDiscount = subtotal - discount;
+            // Free shipping across Tunisia for orders >= 300 TND, otherwise 8.000 TND
+            const shipping = (afterDiscount > 0 && afterDiscount < 300) ? 8.000 : 0;
+            const total = afterDiscount + shipping;
+            return { subtotal, discount, shipping, total };
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const badge = document.getElementById('cart-badge');
+            const footer = document.getElementById('cart-footer');
+            const dict = i18n[state.lang];
+
+            const totalItems = state.cart.reduce((sum, item) => sum + item.qty, 0);
+            badge.textContent = totalItems;
+
+            if (state.cart.length === 0) {
+                footer.classList.add('hidden');
+                container.innerHTML = `
+                    <div class="text-center py-16 space-y-3">
+                        <div class="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto text-2xl">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                        </div>
+                        <p class="font-bold text-slate-500">${dict.emptyCartMsg}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            footer.classList.remove('hidden');
+            container.innerHTML = state.cart.map(item => {
+                const prod = state.products.find(p => p.id === item.id);
+                if (!prod) return '';
+                const title = state.lang === 'ar' ? prod.name_ar : prod.name_en;
+
+                return `
+                    <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/70">
+                        <img src="${prod.image}" class="w-16 h-16 rounded-xl object-cover shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold text-sm truncate">${title}</h4>
+                            <p class="text-brand-600 dark:text-brand-400 font-extrabold text-sm mt-0.5">${formatTND(prod.price * item.qty)}</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <button onclick="updateCartQty('${prod.id}', -1)" class="w-6 h-6 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-bold">-</button>
+                                <span class="text-xs font-bold w-5 text-center">${item.qty}</span>
+                                <button onclick="updateCartQty('${prod.id}', 1)" class="w-6 h-6 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-bold">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const { subtotal, discount, shipping, total } = calculateCartTotals();
+            document.getElementById('cart-subtotal').textContent = formatTND(subtotal);
+            document.getElementById('cart-shipping').textContent = shipping === 0 ? dict.freeShipping : formatTND(shipping);
+            document.getElementById('cart-total').textContent = formatTND(total);
+            
+            const discountRow = document.getElementById('discount-row');
+            if (state.discountApplied) {
+                discountRow.classList.remove('hidden');
+                document.getElementById('cart-discount').textContent = `-${formatTND(discount)}`;
+            } else {
+                discountRow.classList.add('hidden');
+            }
+        }
+
+        function openCheckoutModal() {
+            toggleCartDrawer(false);
+            const { total } = calculateCartTotals();
+            document.getElementById('checkout-final-amount').textContent = formatTND(total);
+            document.getElementById('checkout-form').classList.remove('hidden');
+            document.getElementById('payment-receipt').classList.add('hidden');
+            
+            if (state.currentUser) {
+                document.getElementById('chk-name').value = state.currentUser.name;
+            }
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        function toggleCardFields(show) {
+            document.getElementById('credit-card-section').classList.toggle('hidden', !show);
+        }
+
+        function formatCardInput(input) {
+            let val = input.value.replace(/\D/g, '').substring(0, 16);
+            let formatted = val.match(/.{1,4}/g)?.join(' ') || '';
+            input.value = formatted;
+            document.getElementById('preview-card-num').textContent = formatted || '•••• •••• •••• 4242';
+        }
+
+        function processPayment(e) {
+            e.preventDefault();
+            const btn = document.getElementById('pay-submit-btn');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processing...`;
+
+            setTimeout(() => {
+                const { total } = calculateCartTotals();
+                const customerName = document.getElementById('chk-name').value;
+                const phone = document.getElementById('chk-phone').value;
+                const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+                const orderId = 'ZYN-' + Math.floor(1000 + Math.random() * 9000);
+
+                // Deduct stock in local DB
+                state.cart.forEach(item => {
+                    const prod = state.products.find(p => p.id === item.id);
+                    if (prod) prod.stock = Math.max(0, prod.stock - item.qty);
+                });
+
+                // Save order to local DB
+                state.orders.unshift({
+                    id: orderId,
+                    customerName,
+                    phone,
+                    paymentMethod,
+                    total,
+                    status: 'Pending',
+                    date: new Date().toISOString().split('T')[0]
+                });
+
+                // Clear cart
+                state.cart = [];
+                state.discountApplied = false;
+                syncDB();
+
+                // Update UI
+                updateCartUI();
+                renderProducts();
+                renderAdminDashboard();
+
+                // Show Receipt
+                document.getElementById('checkout-form').classList.add('hidden');
+                document.getElementById('payment-receipt').classList.remove('hidden');
+                document.getElementById('receipt-id').textContent = '#' + orderId;
+                document.getElementById('receipt-amount').textContent = formatTND(total);
+
+                btn.disabled = false;
+                applyLanguage();
+            }, 900);
+        }
+
+        /**
+         * 6. AUTHENTICATION SYSTEM
+         */
+        function openAuthModal(autoFillAdmin = false) {
+            document.getElementById('auth-modal').classList.remove('hidden');
+            if (state.currentUser) {
+                document.getElementById('auth-forms-container').classList.add('hidden');
+                document.getElementById('auth-profile-container').classList.remove('hidden');
+                document.getElementById('profile-name').textContent = state.currentUser.name;
+                document.getElementById('profile-email').textContent = state.currentUser.email;
+                document.getElementById('profile-role-badge').textContent = state.currentUser.role.toUpperCase();
+                document.getElementById('profile-admin-shortcut').classList.toggle('hidden', state.currentUser.role !== 'admin');
+            } else {
+                document.getElementById('auth-forms-container').classList.remove('hidden');
+                document.getElementById('auth-profile-container').classList.add('hidden');
+                if (autoFillAdmin) fillAdminDemo();
+            }
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        function toggleAuthMode(mode) {
+            const isLogin = mode === 'login';
+            document.getElementById('login-form').classList.toggle('hidden', !isLogin);
+            document.getElementById('register-form').classList.toggle('hidden', isLogin);
+            document.getElementById('btn-mode-login').className = isLogin 
+                ? 'py-2 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 shadow-sm transition'
+                : 'py-2 rounded-lg text-xs font-bold text-slate-500 transition';
+            document.getElementById('btn-mode-register').className = !isLogin 
+                ? 'py-2 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 shadow-sm transition'
+                : 'py-2 rounded-lg text-xs font-bold text-slate-500 transition';
+        }
+
+        function fillAdminDemo() {
+            toggleAuthMode('login');
+            document.getElementById('login-email').value = 'admin@zayanistore.com';
+            document.getElementById('login-password').value = 'admin123';
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
+            const pass = document.getElementById('login-password').value;
+
+            const user = state.users.find(u => u.email.toLowerCase() === email && u.password === pass);
+            if (!user) {
+                showToast(state.lang === 'ar' ? 'بيانات الدخول غير صحيحة' : 'Invalid email or password', 'error');
+                return;
+            }
+
+            state.currentUser = user;
+            syncDB();
+            updateAuthUI();
+            closeAuthModal();
+            showToast(state.lang === 'ar' ? `مرحباً بك ${user.name}` : `Welcome back, ${user.name}`, 'success');
+
+            if (user.role === 'admin') {
+                switchView('admin');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('reg-name').value.trim();
+            const email = document.getElementById('reg-email').value.trim().toLowerCase();
+            const password = document.getElementById('reg-password').value;
+
+            if (state.users.some(u => u.email === email)) {
+                showToast(state.lang === 'ar' ? 'هذا البريد مسجل مسبقاً' : 'Email already registered', 'error');
+                return;
+            }
+
+            const newUser = { id: 'u-' + Date.now(), name, email, password, role: 'customer' };
+            state.users.push(newUser);
+            state.currentUser = newUser;
+            syncDB();
+            updateAuthUI();
+            renderAdminDashboard();
+            closeAuthModal();
+            showToast(state.lang === 'ar' ? 'تم إنشاء حسابك بنجاح!' : 'Account created successfully!', 'success');
+        }
+
+        function handleLogout() {
+            state.currentUser = null;
+            syncDB();
+            updateAuthUI();
+            closeAuthModal();
+            switchView('store');
+            showToast(state.lang === 'ar' ? 'تم تسجيل الخروج' : 'Signed out', 'success');
+        }
+
+        function updateAuthUI() {
+            const adminBtn = document.getElementById('nav-admin-btn');
+            const headerName = document.getElementById('header-username');
+
+            if (state.currentUser) {
+                headerName.textContent = state.currentUser.name.split(' ')[0];
+                headerName.removeAttribute('data-i18n');
+                if (state.currentUser.role === 'admin') {
+                    adminBtn.classList.remove('hidden');
+                    adminBtn.classList.add('flex');
+                } else {
+                    adminBtn.classList.add('hidden');
+                    adminBtn.classList.remove('flex');
+                }
+            } else {
+                headerName.setAttribute('data-i18n', 'loginBtn');
+                headerName.textContent = i18n[state.lang].loginBtn;
+                adminBtn.classList.add('hidden');
+                adminBtn.classList.remove('flex');
+            }
+        }
+
+        /**
+         * 7. ADMIN DASHBOARD & DATABASE CRUD OPERATIONS
+         */
+        function switchView(view) {
+            const storeView = document.getElementById('view-store');
+            const adminView = document.getElementById('view-admin');
+
+            if (view === 'admin') {
+                if (!state.currentUser || state.currentUser.role !== 'admin') {
+                    openAuthModal(true);
+                    return;
+                }
+                storeView.classList.add('hidden');
+                adminView.classList.remove('hidden');
+                renderAdminDashboard();
+            } else {
+                adminView.classList.add('hidden');
+                storeView.classList.remove('hidden');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function switchAdminTab(tab) {
+            const isProd = tab === 'products';
+            document.getElementById('admin-products-panel').classList.toggle('hidden', !isProd);
+            document.getElementById('admin-orders-panel').classList.toggle('hidden', isProd);
+
+            document.getElementById('tab-admin-products').className = isProd
+                ? 'px-5 py-3 text-sm font-bold border-b-2 border-brand-600 text-brand-600 transition'
+                : 'px-5 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition';
+            document.getElementById('tab-admin-orders').className = !isProd
+                ? 'px-5 py-3 text-sm font-bold border-b-2 border-brand-600 text-brand-600 transition'
+                : 'px-5 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500 hover:text-slate-700 transition';
+        }
+
+        function renderAdminDashboard() {
+            // Calculate KPIs in TND
+            const revenue = state.orders.reduce((sum, o) => sum + o.total, 0);
+            document.getElementById('stat-revenue').textContent = formatTND(revenue);
+            document.getElementById('stat-orders').textContent = state.orders.length;
+            document.getElementById('stat-products').textContent = state.products.length;
+            document.getElementById('stat-customers').textContent = state.users.length;
+
+            // Render Admin Products Table
+            const prodTbody = document.getElementById('admin-products-tbody');
+            prodTbody.innerHTML = state.products.map(p => {
+                const name = state.lang === 'ar' ? p.name_ar : p.name_en;
+                return `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+                        <td class="py-3.5 px-5">
+                            <div class="flex items-center gap-3">
+                                <img src="${p.image}" class="w-11 h-11 rounded-xl object-cover">
+                                <div>
+                                    <p class="font-bold">${name}</p>
+                                    <p class="text-xs text-slate-400">${p.id}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-5 capitalize">${p.category}</td>
+                        <td class="py-3.5 px-5 font-bold text-brand-600">${formatTND(p.price)}</td>
+                        <td class="py-3.5 px-5">
+                            <span class="px-2.5 py-1 rounded-lg text-xs font-bold ${p.stock > 5 ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
+                                ${p.stock}
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-5 text-end space-x-2 rtl:space-x-reverse">
+                            <button onclick="openProductFormModal('${p.id}')" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-brand-100 text-brand-600 transition" title="Edit">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="deleteProduct('${p.id}')" class="p-2 rounded-lg bg-rose-50 dark:bg-rose-950/50 hover:bg-rose-100 text-rose-600 transition" title="Delete">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Render Admin Orders Table
+            const orderTbody = document.getElementById('admin-orders-tbody');
+            orderTbody.innerHTML = state.orders.map(o => `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+                    <td class="py-3.5 px-5 font-mono font-bold text-brand-600">#${o.id}</td>
+                    <td class="py-3.5 px-5">
+                        <p class="font-bold">${o.customerName}</p>
+                        <p class="text-xs text-slate-400">${o.phone || ''}</p>
+                    </td>
+                    <td class="py-3.5 px-5 text-xs font-semibold">${o.paymentMethod}</td>
+                    <td class="py-3.5 px-5 font-extrabold">${formatTND(o.total)}</td>
+                    <td class="py-3.5 px-5">
+                        <select onchange="updateOrderStatus('${o.id}', this.value)" class="bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-bold outline-none">
+                            <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending / قيد التجهيز</option>
+                            <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>Shipped / تم الشحن</option>
+                            <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered / تم التوصيل</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openProductFormModal(productId = null) {
+            const modal = document.getElementById('product-form-modal');
+            const form = document.getElementById('product-crud-form');
+            form.reset();
+
+            if (productId) {
+                const p = state.products.find(item => item.id === productId);
+                if (p) {
+                    document.getElementById('prod-id').value = p.id;
+                    document.getElementById('prod-name-ar').value = p.name_ar;
+                    document.getElementById('prod-name-en').value = p.name_en;
+                    document.getElementById('prod-price').value = p.price;
+                    document.getElementById('prod-stock').value = p.stock;
+                    document.getElementById('prod-category').value = p.category;
+                    document.getElementById('prod-image').value = p.image;
+                }
+            } else {
+                document.getElementById('prod-id').value = '';
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeProductFormModal() {
+            document.getElementById('product-form-modal').classList.add('hidden');
+        }
+
+        function saveProductFromAdmin(e) {
+            e.preventDefault();
+            const id = document.getElementById('prod-id').value;
+            const productData = {
+                id: id || 'prod-' + Date.now(),
+                name_ar: document.getElementById('prod-name-ar').value.trim(),
+                name_en: document.getElementById('prod-name-en').value.trim(),
+                price: parseFloat(document.getElementById('prod-price').value),
+                stock: parseInt(document.getElementById('prod-stock').value, 10),
+                category: document.getElementById('prod-category').value,
+                image: document.getElementById('prod-image').value.trim()
+            };
+
+            if (id) {
+                const idx = state.products.findIndex(p => p.id === id);
+                if (idx !== -1) state.products[idx] = productData;
+            } else {
+                state.products.unshift(productData);
+            }
+
+            syncDB();
+            renderProducts();
+            renderAdminDashboard();
+            closeProductFormModal();
+            showToast(state.lang === 'ar' ? 'تم حفظ المنتج في قاعدة البيانات' : 'Product saved to database', 'success');
+        }
+
+        function deleteProduct(id) {
+            state.products = state.products.filter(p => p.id !== id);
+            syncDB();
+            renderProducts();
+            renderAdminDashboard();
+            showToast(state.lang === 'ar' ? 'تم حذف المنتج' : 'Product deleted', 'success');
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const order = state.orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = newStatus;
+                syncDB();
+                showToast(state.lang === 'ar' ? 'تم تحديث حالة الطلب' : 'Order status updated', 'success');
+            }
+        }
+
+        function resetDatabase() {
+            localStorage.removeItem('zayani_products_tnd');
+            localStorage.removeItem('zayani_orders_tnd');
+            localStorage.removeItem('zayani_users_tnd');
+            localStorage.removeItem('zayani_cart_tnd');
+            state.products = [...SEED_PRODUCTS];
+            state.orders = [...SEED_ORDERS];
+            state.users = [...SEED_USERS];
+            state.cart = [];
+            syncDB();
+            renderProducts();
+            updateCartUI();
+            renderAdminDashboard();
+            showToast(state.lang === 'ar' ? 'تمت إعادة ضبط قاعدة البيانات للوضع الافتراضي' : 'Demo database reset complete', 'success');
+        }
+
+        /**
+         * 8. CUSTOM TOAST NOTIFICATIONS
+         */
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const colors = {
+                success: 'bg-slate-900 dark:bg-emerald-600 text-white',
+                error: 'bg-rose-600 text-white',
+                warning: 'bg-amber-500 text-white'
+            };
+            toast.className = `${colors[type] || colors.success} px-4 py-3 rounded-2xl shadow-xl text-sm font-bold flex items-center gap-2.5 animate-fade-in pointer-events-auto`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-info"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+<a href="file:///C:/Users/GaminGGearTN/Documents/vs%20code%20html/zayani%20store.html" target="_blank">Visit Our Store</a>
+
+</body>
+</html>
